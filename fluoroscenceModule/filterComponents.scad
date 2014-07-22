@@ -1,5 +1,5 @@
 /*********************************************************************/
-/* 	Modified: 14:25 18/07/2014													*/ 
+/* 	Modified: 14:25 22/07/2014													*/ 
 /* 	filterComponents.scad 														*/ 
 /* 																						*/
 /* 	This files contains four modules that create components relating	*/
@@ -16,20 +16,12 @@
 /*********************************************************************/
 
 
-
-
-// NEED TO UPDATE THE LAST TWO MODULES!!!!!!
-
-
-
-
 /*
  * Files needed
  * ====================================================================
  */
 
 include <configuration.scad>;
-
 
 
 // "+1" has been included to allow the filter to fit into the slot easily
@@ -76,8 +68,8 @@ module rightFilterGroove()
 	{
 		union()
 		{
-			cube([25,4,6]);
-			translate([0,0,6]) cube([13,4,2]);
+			cube([filterWidth + 2*filterMT + 1 + 2*2, 4, 4 + 2]);
+			translate([0,0,4 + 2]) cube([(filterWidth + 2*filterMT + 1 + 2*2)/2,4,2]);
 		}
 
 		union()
@@ -93,13 +85,13 @@ module leftFilterGroove()
 	{
 		union()
 		{
-			cube([25,4,6]);
-			translate([0,0,6]) cube([13,4,2]);
+			cube([filterWidth + 2*filterMT + 1 + 2*2, 4, 4 + 2]);
+			translate([0,0,4 + 2]) cube([(filterWidth + 2*filterMT + 1 + 2*2)/2,4,2]);
 		}
 
 		union()
 		{
-			translate([2,0,2]) cube([23,2,4.1]);
+			translate([2,0,2]) cube([filterWidth + 2*filterMT + 1 + 2,2,4.1]);
 		}
 	}
 }

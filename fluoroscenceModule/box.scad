@@ -1,40 +1,56 @@
 /*********************************************************************/
-/* 	Modified: 14:25 18/07/2014													*/
-/* box.scad					 														*/
-/* 																						*/
-/* 	This files contains four modules that create components relating	*/
-/* to the filter. They are:														*/
-/* 			1. filterPlate - base plate where the filter sits				*/
-/* 																						*/
+/* 	Modified: 14:25 22/07/2014												 	*/
+/* box.scad					 										 				*/
+/* 																	 					*/
+/* 	This files contains four modules that create components relating 	*/
+/* to the component that houses the filters and light source. They 	*/
+/* are	:															 					*/
+/* 			1. plate - end plates that connect component housing to 		*/
+/* 						  microscope								 					*/
+/* 			2. topFilterPlate - top end plate that is required in 		*/
+/* 									  addition to the plate to mount filter	*/
+/* 			3. box - main filter housing component		 					*/
+/* 			4. screwHole - used by module box, can be ignored				*/
+/* 																	 					*/
 /*********************************************************************/
 
 
+/* IMPROVEMENTS NEEDED TO THIS FILE: */
+/* 
+/* Modify plate so that a connector is made to attach it to the microscope - currently there is nothing
+*/
 
-use </home/urop/OpenSCAD/FilterMount.scad>
+/*
+ * Files needed
+ * ====================================================================
+ */
 
-// Global
-$fn=50;
-MT = 3; // Material Thickness
-Screw = 3; // Screw
-ExtraM = 2; //Extra material around screw
-ScrewM = Screw+ExtraM; // Thickness of screw support 
-CylinderH = 20; // Height of cylinder
-CylinderD = 29; // Diameter of optical section
-CylinderT = 10; // Thickness of cylinder
+include <configuration.scad>;
+use <filterComponents.scad>;
 
-/***********************************************************/
-/* 																			*/ 
-/* END PLATES TO CONNECT ONTO LENS SYSTEM						*/
-/* 																			*/
-/***********************************************************/
-module plate(x,y)
+
+/*
+ * End plates to connect onto the lens system
+ * ====================================================================
+ */
+
+// plate module takes three arguments - x and y which determine the size of the end plate and are integers (this should be the same as the x and y dimensions of the box, and a whichEnd variable which is a String that should be passed as either "top" or blank. Passing "top" tells the module to make the top plate and not passing anything defaults it to making the bottom plate. 
+
+module plate(x,y,whichEnd)
 {
 	difference()
 	{
 		union()
 		{
-			cube([x,y,MT]);
-			translate([x/2,y/2,MT]) cylinder(r=CylinderD/2, h=CylinderH);
+			// Determines thickness of plate depending on if the additional topFilterPlate() component is required. 
+			if (whichEnd == "top")
+			{
+				cube([x,y,MT/2]);
+				translate([x/2,y/2,MT/2]) cylinder(r=CylinderD/2, h=CylinderH);
+			} else {
+				cube([x,y,MT]);
+				translate([x/2,y/2,MT]) cylinder(r=CylinderD/2, h=CylinderH);
+			}
 		}
 	
 		union()
@@ -50,36 +66,15 @@ module plate(x,y)
 	}
 }
 
+// topFilterPlate module is required for the top end plate as this component is where the filter is housed - it cannot be combined with the top end plate component as it cannot be 3D printed successfully. 
 
-module topPlate(x,y)
+module topFilterPlate(x,y)
 {
 	difference()
 	{
 		union()
 		{
-			plate(x,y);
-		}
-
-		union()
-		{
-			translate([x/2,y/2,MT+CylinderH-5]) difference()
-			{
-				cylinder(r=CylinderD/2,h=5);
-				cylinder(r=(CylinderD-5)/2, h=5);
-			}
-		}
-	}
-	translate([x/2-16.5,y/2-12,-7]) topFilterSupport();
-}
-
-
-module testtopPlate(x,y)
-{
-	difference()
-	{
-		union()
-		{
-			cube([x,y,2]);
+			cube([x,y,MT/2]);
 		}
 	
 		union()
@@ -97,33 +92,13 @@ module testtopPlate(x,y)
 }
 
 
-module bottomPlate(x,y)
-{
-	difference()
-	{
-		union()
-		{
-			plate(x,y);
-		}
 
-		union()
-		{
-			translate([x/2,y/2,MT+CylinderH-5]) difference()
-			{
-				cylinder(r=(CylinderD-4)/2, h=5);
-				cylinder(r=(CylinderD-CylinderT)/2,h=5);
-			}
-			translate([x/2,7.5,20.5]) rotate([90,0,0]) cylinder(r=1.5, h=3);
-		}
-	}
-}
+/*
+ * Main filter housing component
+ * ====================================================================
+ */
 
-/***********************************************************/
-/* 																			*/ 
-/* MAIN MODULE WHERE FILTERS SIT									*/
-/* 																			*/
-/***********************************************************/
-
+// box module takes three arguments relating to the dimensions of the housing unit required.
 module box(x,y,z)
 {
 	difference()
@@ -144,8 +119,8 @@ module box(x,y,z)
 				translate(ix) cube([ScrewM,ScrewM,z]);
 			}
 
-			// Lighting cutout
-			translate([x-MT,y/2 - 12.5,4]) cube([MT,25,11.3]);
+			// Cutout for lighting element
+			translate([x-MT,y/2 - 12.5,4]) cube([MT,filterLength,filterWidth * sin(45)]);
 		}
 	}
 
@@ -155,12 +130,13 @@ module box(x,y,z)
 		translate(ix) screwHole(z);
 	}
 
-	// Groove for filter to slot into
-	translate([13,MT-0.5,1]) rotate([0,-45,0]) rightFilterGroove();
-	translate([13,y-(MT+4-0.5),1]) rotate([0,-45,0]) leftFilterGroove();
+	// Groove for filter held at 45 degrees to slot into
+	translate([(x-(filterWidth + 2*filterMT + 1 -4)*sin(45))/2,MT-0.5,1]) rotate([0,-45,0]) rightFilterGroove();
+	translate([(x-(filterWidth + 2*filterMT + 1 -4)*sin(45))/2,y-(MT+4-0.5),1]) rotate([0,-45,0]) leftFilterGroove();
 
 }
 
+// Module used by box - ignore
 module screwHole(z)
 {
 	difference()
@@ -179,10 +155,3 @@ module screwHole(z)
 		}
 	}
 }
-
-
-//bottomPlate(40,38);
-testtopPlate(40,38);
-//box(38,40,30);
-//screwHole(30);
-//leftFilterGroove();
