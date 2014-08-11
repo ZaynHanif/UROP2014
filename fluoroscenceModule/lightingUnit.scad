@@ -39,7 +39,7 @@ module singleLED()
 		}
 	}
 }
-
+ConstCurrent();
 module ConstCurrent()
 {
 	difference()
@@ -47,14 +47,14 @@ module ConstCurrent()
 		union()
 		{
 			cube([40,30,40]);
-			translate([7.5,-5,4]) cube([25,5,11]);
+			translate([7.5,-5,3]) cube([25,5,11]);
 		}
 
 		union()
 		{
-			translate([8.5,-5,5]) cube([23,5,9]);
+			translate([8.5,-5,4]) cube([23,5,9]);
 			translate([3,3,3]) cube([34,30,34]);
-			translate([20,5,9.5]) rotate([90,0,0]) cylinder(r=3,h=10);
+			translate([20,5,8.5]) rotate([90,0,0]) cylinder(r=3,h=10);
 		}
 	}
 	
@@ -62,17 +62,17 @@ module ConstCurrent()
 	{
 		union()
 		{
-			translate([3,3,10]) cube([5,5,5]);
-			translate([32,3,10]) cube([5,5,5]);
-			translate([3,3,28]) cube([5,5,5]);
-			translate([32,3,28]) cube([5,5,5]);
+			translate([3,3,3]) cube([8,3,8]);
+			translate([29,3,3]) cube([8,3,8]);
+			translate([3,3,29]) cube([8,3,8]);
+			translate([29,3,29]) cube([8,3,8]);
 		}
 		union()
 		{
-			translate([5.5,8.5,12.5]) rotate([90,0,0]) cylinder(r=1.5, h=5);
-			translate([34.5,8.5,12.5]) rotate([90,0,0]) cylinder(r=1.5, h=5);
-			translate([5.5,8.5,30.5]) rotate([90,0,0]) cylinder(r=1.5, h=5);
-			translate([34.5,8.5,30.5]) rotate([90,0,0]) cylinder(r=1.5, h=5);
+			translate([9,8.5,7.5]) rotate([90,0,0]) cylinder(r=1.5, h=5);
+			translate([31.5,8.5,7]) rotate([90,0,0]) cylinder(r=1.5, h=5);
+			translate([9,8.5,32.5]) rotate([90,0,0]) cylinder(r=1.5, h=5);
+			translate([33,8.5,33]) rotate([90,0,0]) cylinder(r=1.5, h=5);
 		}
 	}
 }
@@ -84,11 +84,11 @@ module cover(whichOne)
 {
 	if (whichOne == "CC")
 	{
-		extra = 21;
+		//extra = 21;
 	}
 	else
 	{
-		extra = 0;
+		//extra = 0;
 	}
 
 	difference()
