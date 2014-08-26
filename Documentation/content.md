@@ -44,3 +44,6 @@ A few points about the components:
 * D1 needed to be a LED with a wavelength of 450nm in order to successfully excite the two fluorophores this module was being designed for as explained in the earlier sections. Any LED can be chosen as long as its wavelength satisfies the fluorophores excitation wavelength.
 
 ### Background
+To understand how the constant current circuit part of the lighting unit works, take a look at the tutorial by Dan Goldwater (link is in the introduction). The tutorial provides a comprehensive explanation to how the circuit works and is best to read that to fully understand how the constant current circuit works.
+
+The dimming part of the circuit works in a simple manner. The LED is turned on and off very quickly (so that flickering is not noticeable to the human eye) and the output brightness of the LED is a ratio of the time the LED is turned on to the time it is turned off. This technique described is 
