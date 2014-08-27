@@ -15,7 +15,7 @@ void loop() {
   // put your main code here, to run repeatedly:
 
   // Variable to store current brightness
-  static int brightnessLevel = 10;
+  static int brightnessLevel = 0;
     
   if (Serial.available() > 0)
   {

@@ -94,10 +94,11 @@ The two sets of two pin headers are for the Arduino and the power supply. Lookin
 
 The diagram below illustrates how the components are positioned on the strip board:
 
-<img title="Strip board circuit diagram" src="images/stripBoardDiagram.jpg" width="320px" height="300px"/>
+<img title="Strip board circuit diagram" src="images/StripBoardDiagram.png"/>
 
 A few points to note:
 
 * The LED is soldered directly onto the strip board and is on the opposite side to the other components.
 * To use the top portion of the strip board as a heatsink for the LED (it heats up very quickly when a large current is passed through it), the fourth row of holes from the top (with the edge nearest to LED being the top) is cut (except the fifth and sixth columns, where the LED sits). This means that the top portion can be soldered together and used as a makeshift heat sink. 
 * The strip board diagram shows the components (except the LED) shifted one row up. This is intentional and the mistake is in the pictures as the components were accidentally soldered one row down.
+
