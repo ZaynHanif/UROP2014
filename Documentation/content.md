@@ -102,3 +102,20 @@ A few points to note:
 * To use the top portion of the strip board as a heatsink for the LED (it heats up very quickly when a large current is passed through it), the fourth row of holes from the top (with the edge nearest to LED being the top) is cut (except the fifth and sixth columns, where the LED sits). This means that the top portion can be soldered together and used as a makeshift heat sink. 
 * The strip board diagram shows the components (except the LED) shifted one row up. This is intentional and the mistake is in the pictures as the components were accidentally soldered one row down.
 
+The final step to wire the circuit together is to put sockets on wires that will connect the Arduino and the power supply to the headers on the strip board circuit. 
+
+### Code to control the brightness
+
+Now that the hardware has been assembled a few lines of code are required to control the brightness of the LED via the Arduino. The serial monitor is used to communicate to the Arduino and to send it commands to adjust brightness, getting the value of the brightness and testing the LED. Code is stored under the file name: dimLED.ino
+
+NOTE: When using the serial monitor to communicate with the Arduino, ensure that the Line Ending is set as New Line otherwise setting the brightness will not work!
+
+For this project, a web application being developed was used to control the Arduino rather than using a serial monitor. The code required for the web application side is under the file name: microscopeLEDBrightness.py. This file allows the web application to have access to the functions, this by passes the need for using the serial monitor and it can be built into a more complete web application that controls an array of functionality of the microscope.   
+
+## The Final Setup
+
+The complete system, once integrated into the microscope, is shown in the images below:
+
+<img title="Complete Setup Image" src="images/CompleteSetup.jpg" />
+
+This tutorial can be modified in any way you require to suit the requirements of the project that you are working on. The setup shown above and the tutorial was written for this particular application. 
