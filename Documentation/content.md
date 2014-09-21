@@ -1,13 +1,111 @@
+# The Microscope Fluorescence Module 
 
-# The Microscope Fluoroscence Module 
+## Project Overview 
+The aim of this project was to develop a fluorescence module to add functionality to the OpenLabTools microscope and to allow it to be utilised for biological applications. 
+
+### Background
+Fluorescence is the emission of light by a substance that has absorbed light or other electromagnetic radiation (definition taken from [Wikipedia](http://en.wikipedia.org/wiki/Fluorescence)). The most common type of fluorescence is when ultraviolet radiation, naked to the human eye, is absorbed by a substance and visible light is emitted. This phenomenon allows for tracking of atoms and molecules (such a proteins) in biological systems by marking the substance that is being traced with a fluorophore ([Wikipedia](http://en.wikipedia.org/wiki/Fluorophore): A fluorophore is a fluorescent chemical compound that can re-emit light upon light excitation). Electromagnetic radiation that can excite the fluorophore is used to illuminate the sample which will emit visible light which is observed through a microscope. 
+
+Fluorescent microscopes can cost upwards of tens of thousands of pounds so the task was to create a modular component that can be attached to the OpenLabTools microscope to give it the functionality of a more expensive fluorescent microscope. 
+
+### This project
+Fluorescein and Green Fluorescent Protein (GFP) were the two primary fluorophores that this fluorescence module was being made for. Therefore, be careful when modifying the project to make it work with different fluorophores and take care in ensuring that you use the correct light source and correct set of filters depending on the excitation and emission wavelengths of the fluorophore.
+
+The excitation wavelength of fluorescein is 494nm and GFP has a major excitation peak at 395nm and a minor one at 475nm. This meant that the LED light source used had to accommodate both major excitation peaks and hence a 450nm LED was used as it will emit radiation +/- 50nm allowing it to be used for fluorescein and GFP. The emission wavelength of fluorescein was 521 nm and for GFP it was 509nm. This meant that a long band pass filter (details of the filter used are in the 'Microscope Attachment' section) was used to ensure that only the emission radiation was transmitted to the Raspberry Pi camera.
+
+INIFNITY FOCUSED MICROSCOPE CRAP THING?
+
+This tutorial is split up into two sections:
+
+- Microscope Attachment: this section gives details on the unit that attaches to the rest of the microscope which houses the filters and the lighting unit.
+- LED light source for the fluorescence module: this section gives details on the circuit created for the LED along with the software to control its brightness. 
+
+The information in these sections can be modified in any way necessary to suit different requirements and places where factors can be modified has been included in the tutorial.
+
+### State of project
+The fluorescence module for the microscope was tested by looking at two pieces of tissue paper - one that was the test sample and soaked with distilled water and the other was soaked with fluorescein (it comes in powder form and is dissolved in distilled water).
+During testing an issue arose where the Raspberry Pi Camera did not notice the fluorescence as shown by the images below, with the image on the left the test sample without fluorescein and the image on the right the sample with fluorescein:
+
+<img title="Image without fluorescein" src="images/TestImageWithoutRPiLens.jpg" width="49%"/>
+<img title="Image with fluorescein" src="images/ImageWFWithoutRPiLens.jpg" width="49%"/>
+
+Looking at the centre of both images we can see that there is no difference between the two samples that were tested. The potential solution to this is to use a condenser lens, however, there was not enough time to do this. The reason this could be the solution is that the fluorescence module does work correctly as can be seen from the images below:
+
+<img title="Working image without lighting" src="images/ImageWithoutLEDWithRPiLens.jpg" width="49%"/>
+<img title="Working image with lighting" src="images/ImageWithLEDWithRPiLens.jpg" width="49%"/>
+
+Both images are taken of the tissue soaked in fluorescein with the image on the left taken with the LED light source for the module switched off and the image on the right taken with the LED light source turned on. 
+
+As we can see, the area of the tissue marked with fluorescein shows up clearly when the sample is illuminated with blue light and emits green light as expected. This image was taken with the same set up as above, but the Raspberry Pi Camera lens (that was removed) was used. The reason this works is unclear but it is possible that the lack of a condenser means that without the lens the fluorescein cannot be observed. 
 
 
 ## Microscope Attachment
 
+<img title="Microscope Attachment Image" src="images/MicroscopeAttachmentImage.jpg" width="100%" />
 
+### Introduction
+The unit that attaches to the microscope and houses the two filters and the LED lighting is made through a combination of multiple components. With each component being assembled into the one unit through screws or by being a push fit component. The reason for multiple components being required is that firstly this method provides the easiest access to the filter holders so that the filters can be changed and means the lighting unit can be used a standalone component. Furthermore, combining multiple components would have resulted in difficulties when 3D printing the components which will be explained in detail in the coming sections of this tutorial. 
 
+The microscope attachment was made using OpenSCAD (an open source 3D CAD drawing package) and the files are all stored in the OpenSCADCode folder. The dimensions of key components is stored in the file '	configuration.scad' and this allows the unit to be modified for different applications, such as different screw sizes, different filter sizes, etc. Each OpenSCAD file has instructions at the beginning on how to use it and this information will also appear in this tutorial in the relevant sections. 
 
-## LED light source for the fluoroscence module
+NOTE: The one 'hack' in the code is that the filter thickness is set to 1mm and the code needs to be modified such that changing the filter thickness automatically adjusts the sizes of the components to accommodate this. The rest of the code is parametrised and hence other dimensions can be modified easily in 'configuration.scad', and the size of each component will be modified automatically to accommodate this change. 
+
+### Components
+
+The filters used are the two components (excluding the LED circuit components and screws) that are not 3D printed. One filter is positioned at 45 degrees within the main blue cube, which sits between the optical tubes, and is used to direct the light from the LED, which is in the white cube on the side, down towards the sample. The filter used for this was: 
+
+* Band-pass dichroic filter from [Comar Optics](http://www.comaroptics.com/components/filters/dichroic-filters/band-pass-dichroic-filters). The specific one for this project was the '540 IY 116'.
+
+The second filter sits in the top of the blue cube and is used to prevent the blue light from the LED reaching the Raspberry Pi camera sensor we were using for the microscope and only the emission wavelength is allowed through. The filter used for this was:
+
+* Long-pass dichroic filter from [Comar Optics](http://www.comaroptics.com/components/filters/dichroic-filters/long-pass-dichroic-filters). The specific one for this project was the '525 IB 116'.
+
+The other components were 3D printed and a 'configuration.scad' file, split into three key sections, was used to make the system modular and allow the components to be resized for different project requirements:
+
+* Filter dimension variables: this contains all the dimensional information for the filters. Change this is you use a different filter to ones used in this project.
+* Main box variables: this contains the dimensional information for the main housing unit where the filter at 45degrees is slotted in (cube in between the two sections of the optical tube). This is where the material thickness and the screw diameter dimensions are set. 
+* Microscope optics dimensions: this is where the dimensions regarding the optical section of the microscope are set, such as the tube diameter, thread height, etc.
+
+#### Filter Components (refer to file: filterComponents.scad)
+
+<img title="Filter Components Image" src="images/FilterComponents.jpg" width="100%" />
+
+There are four key components related to the filters:
+
+* Filter plate which houses the filter
+* Filter clip which secures the filter in the filter plate
+* The left and right filter grooves into which the filter plate slots into. These grooves are at 45 degrees and are located in the main blue cube. 
+
+To use any of the components, include this OpenSCAD file in your project and simply call whichever component is required: filterPlate(), filterClip(), rightFilterGroove() or leftFilterGroove()
+
+#### Main unit (refer to file: box.scad)
+
+<img title="Main Housing Unit Image" src="images/MainHousingUnit.jpg" width="100%" />
+
+There are three key components in this file, with an additional component used by one of the key components: 
+
+* End plates - these are used to connect the cylindrical optical tubes to the main box cube. The top end plate houses the second filter and is why the next component is required,
+* Top Filter Plate is where the second filter is housed, and the filter plate from 'filterComponents.scad' is used here. This attaches to the top end plate.
+* Main box unit - this is where the first filter sits, and hence contains the filter grooves from 'filterComponents.scad'. It also has a slot for the LED housing unit to slot into. 
+* screwHole - this component is utilised by the main box unit and hence can be ignored. 
+
+Detailed instructions on how to use each component can be found in the comments just above the code for each component in 'box.scad'. 
+
+All these components are connected together using eight 3mm screws (four on each end).
+
+#### LED housing unit (refer to file: lightingUnit.scad)
+
+<img title="LED Housing Unit Image" src="images/LEDHousingUnit.jpg" width="100%" />
+
+There are three components in here:
+
+* singleLED() - this was a test module made to see if the push fit mechanism would work. This has been included if you simple want to use a single LED connected in series to a resistor because this test component is small. 
+* ConstCurrent() - this is the LED housing unit you would need if you use the constant current circuit detailed below. It has a slot for the LED and simply pushes into the main box unit to fit. 
+* Cover() - this is the cover for the LED housing unit. (Depending on the argument passed, a cover for both of the above housing units can be created).
+
+The LED constant current circuit is screwed into the ConstCurrent housing unit. There are four hole available, however, due to the design of the LED constant current circuit, only three of them are used. Refer to the next section for more information on the LED constant current circuit. 
+
+## LED light source for the fluorescence module
 
 ### Introduction
 The following set of instructions will provide you with information on creating a constant current LED circuit that can be dimmed by using an Arduino.
@@ -106,7 +204,7 @@ The final step to wire the circuit together is to put sockets on wires that will
 
 ### Code to control the brightness
 
-Now that the hardware has been assembled a few lines of code are required to control the brightness of the LED via the Arduino. The serial monitor is used to communicate to the Arduino and to send it commands to adjust brightness, getting the value of the brightness and testing the LED. Code is stored under the file name: dimLED.ino
+Now that the hardware has been assembled a few lines of code are required to control the brightness of the LED via the Arduino. The serial monitor is used to communicate to the Arduino and to send it commands to adjust brightness, getting the value of the brightness and testing the LED. Code is stored under the file name: ArduinoCode/dimLED.ino
 
 NOTE: When using the serial monitor to communicate with the Arduino, ensure that the Line Ending is set as New Line otherwise setting the brightness will not work!
 
